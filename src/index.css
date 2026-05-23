@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@theme {
+  --color-primary: #6366f1;
+  --color-primary-dark: #8b5cf6;
+  --color-secondary: #06b6d4;
+  --color-surface-dark: #0f172a;
+  --color-surface-dark-2: #111827;
+  --color-surface-light: #f8fafc;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --radius-card: 1.25rem;
+  --shadow-soft: 0 4px 24px -4px rgba(99, 102, 241, 0.12);
+  --shadow-glow: 0 0 40px -8px rgba(139, 92, 246, 0.35);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans antialiased;
+  }
+
+  .dark body {
+    @apply bg-surface-dark text-slate-100;
+  }
+
+  .light body {
+    @apply bg-surface-light text-slate-900;
+  }
+}
+
+@layer utilities {
+  .gradient-brand {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+  }
+
+  .glass {
+    @apply border border-white/10 bg-white/5 backdrop-blur-xl;
+  }
+
+  .light .glass {
+    @apply border-slate-200/80 bg-white/70;
+  }
+
+  .glass-strong {
+    @apply border border-white/15 bg-slate-900/60 backdrop-blur-2xl;
+  }
+
+  .light .glass-strong {
+    @apply border-slate-200/90 bg-white/90;
+  }
+
+  .noise-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-0.5 shadow-lg;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-600/50;
+}
