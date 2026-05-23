@@ -12,6 +12,7 @@
   --radius-card: 1.25rem;
   --shadow-soft: 0 4px 24px -4px rgba(99, 102, 241, 0.12);
   --shadow-glow: 0 0 40px -8px rgba(139, 92, 246, 0.35);
+  --container-wide: 90rem;
 }
 
 @layer base {
@@ -51,11 +52,19 @@
   }
 
   .glass-strong {
-    @apply border border-white/15 bg-slate-900/60 backdrop-blur-2xl;
+    @apply border border-white/15 bg-slate-900/60 backdrop-blur-2xl shadow-[var(--shadow-soft)];
   }
 
   .light .glass-strong {
     @apply border-slate-200/90 bg-white/90;
+  }
+
+  .container-app {
+    @apply mx-auto w-full min-w-0 max-w-[var(--container-wide)] px-4 md:px-5 lg:px-6;
+  }
+
+  .section-gap {
+    @apply mt-12 md:mt-14 lg:mt-16;
   }
 
   .noise-overlay::after {
@@ -73,6 +82,12 @@
 
   .hover-lift:hover {
     @apply -translate-y-0.5 shadow-lg;
+  }
+
+  .glow-ring {
+    box-shadow:
+      0 0 0 1px rgba(99, 102, 241, 0.2),
+      0 0 48px -12px rgba(139, 92, 246, 0.45);
   }
 }
 

@@ -13,7 +13,7 @@ function Logo() {
           <rect x="3" y="3" width="18" height="18" rx="4" />
         </svg>
       </div>
-      <span className="text-lg font-bold tracking-tight">
+      <span className="text-base font-bold tracking-tight sm:text-lg">
         Compress<span className="gradient-text">AI</span>
       </span>
     </div>
@@ -34,7 +34,7 @@ export default function Navbar({ onHistoryOpen, onSettingsOpen }) {
           : "bg-transparent"
       }`}
     >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <nav className="container-app flex h-14 items-center justify-between sm:h-16">
         <Logo />
 
         <div className="flex items-center gap-1 sm:gap-2">
@@ -44,7 +44,7 @@ export default function Navbar({ onHistoryOpen, onSettingsOpen }) {
           <IconButton onClick={onHistoryOpen} label="History">
             <HiOutlineClock className="h-5 w-5" />
           </IconButton>
-          <IconButton onClick={onSettingsOpen} label="Settings" className="lg:hidden">
+          <IconButton onClick={onSettingsOpen} label="Settings" className="md:hidden">
             <HiOutlineCog className="h-5 w-5" />
           </IconButton>
         </div>

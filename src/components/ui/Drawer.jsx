@@ -22,20 +22,24 @@ export default function Drawer({ open, onClose, title, children, side = "right" 
             animate={{ x: 0 }}
             exit={slideFrom}
             transition={{ type: "spring", damping: 28, stiffness: 320 }}
-            className={`fixed top-0 ${position} z-50 flex h-full w-full max-w-md flex-col border-white/10 glass-strong shadow-2xl`}
+            className={`fixed top-0 ${position} z-50 flex h-full w-full max-w-full flex-col border-white/10 glass-strong shadow-2xl sm:max-w-md`}
           >
-            <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-              <h2 className="text-lg font-semibold">{title}</h2>
+            <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-4 sm:px-6">
+              <h2 className="truncate pr-2 text-base font-semibold sm:text-lg">
+                {title}
+              </h2>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg p-2 text-slate-400 transition hover:bg-white/10 hover:text-white"
+                className="shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-white/10 hover:text-white"
                 aria-label="Close"
               >
                 <HiX className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-6">{children}</div>
+            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6">
+              {children}
+            </div>
           </motion.aside>
         </>
       )}
