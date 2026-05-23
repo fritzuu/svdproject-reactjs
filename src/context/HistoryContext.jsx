@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { HISTORY_STATUS } from "../constants/historyStatus";
 
 const STORAGE_KEY = "compressai-history";
 const MAX_ITEMS = 20;
@@ -19,31 +20,74 @@ function loadHistory() {
   }
 }
 
+function saveToStorage(items) {
+  const stored = items.map(stripThumbnail).slice(0, MAX_ITEMS);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+}
+
 export function HistoryProvider({ children }) {
   const [history, setHistory] = useState(loadHistory);
 
-  const persist = useCallback((items) => {
-    const stored = items.map(stripThumbnail).slice(0, MAX_ITEMS);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
-    setHistory(items.slice(0, MAX_ITEMS));
+  const upsertEntry = useCallback((entry) => {
+    setHistory((prev) => {
+      const idx = prev.findIndex((h) => h.fileKey === entry.fileKey);
+      let next;
+
+      if (idx >= 0) {
+        next = [...prev];
+        next[idx] = {
+          ...next[idx],
+          ...entry,
+          id: next[idx].id,
+          updatedAt: Date.now(),
+        };
+      } else {
+        next = [
+          {
+            ...entry,
+            id: entry.id ?? crypto.randomUUID(),
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          },
+          ...prev,
+        ];
+      }
+
+      const trimmed = next.slice(0, MAX_ITEMS);
+      saveToStorage(trimmed);
+      return trimmed;
+    });
   }, []);
 
-  const addEntry = useCallback(
-    (entry) => {
-      const id = crypto.randomUUID();
-      const newEntry = { ...entry, id, timestamp: Date.now() };
-      persist([newEntry, ...history]);
-      return id;
-    },
-    [history, persist]
+  const updateEntryStatus = useCallback((fileKey, status, patch = {}) => {
+    setHistory((prev) => {
+      const idx = prev.findIndex((h) => h.fileKey === fileKey);
+      if (idx < 0) return prev;
+
+      const next = [...prev];
+      next[idx] = {
+        ...next[idx],
+        ...patch,
+        status,
+        updatedAt: Date.now(),
+      };
+      saveToStorage(next);
+      return next;
+    });
+  }, []);
+
+  const clearHistory = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY);
+    setHistory([]);
+  }, []);
+
+  const value = useMemo(
+    () => ({ history, upsertEntry, updateEntryStatus, clearHistory }),
+    [history, upsertEntry, updateEntryStatus, clearHistory]
   );
 
-  const clearHistory = useCallback(() => persist([]), [persist]);
-
   return (
-    <HistoryContext.Provider value={{ history, addEntry, clearHistory }}>
-      {children}
-    </HistoryContext.Provider>
+    <HistoryContext.Provider value={value}>{children}</HistoryContext.Provider>
   );
 }
 
@@ -52,3 +96,5 @@ export function useHistory() {
   if (!ctx) throw new Error("useHistory must be used within HistoryProvider");
   return ctx;
 }
+
+export { HISTORY_STATUS };
